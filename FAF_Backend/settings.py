@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'FAF_DATABASE',
         'USER': 'root',
-        'PASSWORD': '123ncb',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '',
     }
