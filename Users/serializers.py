@@ -34,6 +34,8 @@ class GPSRequestSerializer(serializers.Serializer):
     pk = serializers.IntegerField(read_only=True)
     username_requester = serializers.CharField(max_length=55)
     username_requested = serializers.CharField(max_length=55)
+    latitude = serializers.CharField()
+    longitude = serializers.CharField()
 
     def create(self, validated_data):
         return GPSRequest.objects.create(**validated_data)

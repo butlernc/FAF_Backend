@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from Users.models import User, Location
-from Users.serializers import UserSerializer, LocationSerializer
+from Users.serializers import UserSerializer, LocationSerializer, GPSRequestSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -24,22 +24,31 @@ def user_list(request):
         return Response(locationSerializer.data)
 
     elif request.method == 'POST':
-        if request.data['type'] == 'create':
-            serializer = UserSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        elif request.data['type'] == 'gps_request_response':  # used when a user is responding with gps data
-            # test code
-            serializer = LocationSerializer(data=request.data)
+
+
+
+@csrf_exempt
+def new_user(request):
+
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.data['type'] == 'gps_request':
+
+
+@csrf_exempt
+def receive_gps(request):
+    if request.method == 'POST':
+        gps_request_serializer = GPSRequestSerializer(data=request.data)
+        if gps_request_serializer.is_valid():
+            gps_request_serializer.save()
             # each request will send a username for now, later on they will send a c2a tag too
             # step one: create a data object that will the two user names
             # step two: create our C2M object that will send the the username to the correct user
             # that they want gps coords from.
-
+            return Response(gps_request_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @csrf_exempt
